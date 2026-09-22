@@ -219,5 +219,39 @@ function mostrarPedidos(){
 
 mostrarMenu();
 
+function Buscar(){
+    console.log(`
+        Buscar por: 
+        1. productos Baratos
+        2. productos Caros 
+        3. Bebidas
+        4. Postres
+        
+    `);
+
+teclado.cuestion("Seleccione una opcion de buscar",function(opcion) {
+    if(opcion =="1"){
+    
+    }else { 
+        if(opcion =="2"){
+        
+        }
+    }else {
+        if(opcion =="3"){
+
+        }
+    }else if(opcion=="4"){
+
+    }else if{
+        
+    console.log("Opcion invalida");
+    }
+
+
+});
+}
+
+let Barato = mostrarPedidos.filter(mostrarPedidos.precio < 50);
+
 
 
