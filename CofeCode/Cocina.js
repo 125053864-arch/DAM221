@@ -8,6 +8,8 @@ let teclado = readline.createInterface({
     output: process.stdout
 });
 
+
+
 let productos = [];
 
 function mostrarMenu(){
@@ -59,61 +61,88 @@ function agregarProducto(){
             teclado.question("Nombre de la categoria?: bebida o postre ", function(categorias){
 
                 revisarIngrediente()
-                .then(function){
+                .then(function(){
+
                     return prepararProducto(nombre);
                 })
                 .then(function(){
 
                     let producto = {
-                nombre: nombre,
-                precio: Number(precio),
-                Categoria: categorias
-                    
-                };
+                        nombre: nombre,
+                        precio: Number(precio),
+                        Categoria: categorias
+                    };
                 
-            productos.push(producto);
+                    productos.push(producto);
 
-            console.log("producto agregado");
-            mostrarMenu();
-
-        })
-            .catch(function(error){
-                console.log(error);
-            
-            if(error()=="falta ingrediente"){
-                agregarProducto();
-            }else{
+                    console.log("Producto agregado");
                     mostrarMenu();
-                }
+
+                })
+                .catch(function(error){
+
+                    console.log(error);
+
+                    if(error == "Falta ingrediente"){
+                        teclado.question("¿Desea volver a poner el producto? si/no: ", function(respuesta){
+
+                            if(respuesta.toLowerCase() == "si"){
+                                agregarProducto();
+                            }else{
+                                mostrarMenu();
+                            }
+
+                        });
+
+                    }else if(error == "Error en cocina"){
+                        mostrarMenu();
+                    }
+
+                });
 
             });
-
-        }else if(error == "Error en cocina"){
-            mostrarMenu();
-        }
-    });
-
-    });
 
         });
     });
 }
 
 function revisarIngrediente(){
-    return new promiseHooks(function(rosolver, rechazar){
-        let numero = Math.floor(Math.random()* 10)+1;
+
+    return new Promise(function(resolver, rechazar){
+
+        let numero = Math.floor(Math.random() * 10) + 1;
 
         if(numero == 1){
             rechazar("Falta ingrediente");
-
         }else{
             resolver();
         }
+
     });
+
 }
 
-prepararProducto(){
-    return new promise(function)
+function prepararProducto(nombre){
+
+    return new Promise(function(resolver, rechazar){
+
+        let tiempo = Math.floor(Math.random() * 5) + 1;
+
+        console.log("Preparando " + nombre + "...");
+
+        setTimeout(function(){
+
+            if(tiempo > 3){
+                rechazar("Error en cocina");
+            }else{
+                console.log("Producto preparado correctamente");
+                resolver();
+            }
+
+        }, tiempo * 1000);
+
+    });
+
 }
 
 function editarProducto(){
@@ -135,10 +164,6 @@ function editarProducto(){
 
                 console.log("Producto editado.");
                 mostrarMenu();
-
-
-
-
 
                 });
 
@@ -183,8 +208,6 @@ function listarProductos(){
 
 mostrarMenu();
 
-// Parte de Codigo pegado hecho en Trabajo.Unido 
-
 function Buscar(){
     console.log(`
         Buscar por: 
@@ -195,7 +218,6 @@ function Buscar(){
         5. Regresar
         
     `);
-
 
     teclado.question("Seleccione una opcion de busqueda: ",function(opcion1) {
 
@@ -223,10 +245,9 @@ function Buscar(){
             
     }
 
-    
 });
-//Ya apartir de aqui es donde lo deje 
 }
+
 function barato(){
     let productosBaratos = productos.filter( productos => productos.precio <50 );
     if (productosBaratos.length >0){
@@ -237,6 +258,7 @@ function barato(){
     }
     
 }
+
 function caro(){
     let productosCaros = productos.filter( productos => productos.precio >50);
     if (productosCaros.length >0){
@@ -247,6 +269,7 @@ function caro(){
     }
 
 }
+
 function bebidas(){
     let productobebidas = productos.filter( productos => productos.Categoria === "bebida");
     if (productobebidas.length >0){
@@ -257,6 +280,7 @@ function bebidas(){
     }
 
 }
+
 function pasteles(){
     let productoPasteles =productos.filter(productos => productos.Categoria === "postre");
 
@@ -266,9 +290,3 @@ function pasteles(){
         console.log("No hay pasteles");
     }
 }
-
-let promesa = new Promise((resolver, rechazar)=>{
-
-    resolver("si se pudo ")
-})
-
