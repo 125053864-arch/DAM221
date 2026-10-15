@@ -1,248 +1,286 @@
 let readline = require('readline');
 let teclado = readline.createInterface({
-    imput: process.stdin,
+    input: process.stdin, 
     output: process.stdout
 });
 
-//==============PEDIDOS==========
+let productos = [];
 
-let listaPedidos =  [];
-let subtotal = 0;
-let iva = 0;
-let total = 0;
+function mostrarMenu(){
+    console.log(`
+       MENU 
+       1. agregar
+       2. Editar
+       3. Eliminar
+       4. listar productos 
+       5. Buscar
+       6. Salir
+    `);
 
-function agregarPedido(){
-    teclado.question("Cual es tu pedido? ", (precio) => {
-        teclado.question("Cual es el precio del pedido? ", (precio) => {
-            precio = Number(precio;)
-            listaPedidos.push(pedido);
-            subtotal = subtotal + precio;
-            iva = subtotal * 0.16;
-            total = subtotal + iva;
-            
+    teclado.question("Seleccione una opcion: ", function(opcion)  {
 
-            console.log?("pedido agregado: " + pedido);
-            mostrarPedidos():
-            menuPedidos();
-        });
-    });
-}
+        if (opcion == "1"){
+            agregarProducto();
+
+        }else if (opcion == "2"){
+            editarProducto();
+
+        }else if (opcion == "3"){
+            eliminarProducto();
+
+        }else if (opcion == "4") {
+            listarProductos();
+            mostrarMenu();
 
 
-function mostrarPedidos() {
-console.log?("Lista de pedidos: ");
+        }else if (opcion =="5") {
+            Buscar();
 
-for  (let i = 0; i < listaPedidos.length; i++) {
-    console.log((i + 1) + ". " + listaPedidos[i]);
-}
-
-console.long("Subtotal: $" + subtotal);
-console.log("IVA: $" + iva);
-console.log("Total: $" + total);
-
-}
-
-function menuPedidos(){
-    console.log("1. Agregar pedido");
-    console.log("2. Mostrar pedidos");
-    console.log("3. Salir");
-
-    teclado.question("Seleccione una opcion: ", function(opcion) {
-
-        if (opcion === "1"){
-            agregarPedido();
-
-        } else if (opcion === "2"){
-            mostrarPedidos();
-            menuPedidos();
-
-        }else if (opcion ==="3"){
-            console.log("Programa finalizado");
+        }else if (opcion == "6"){
+            console.log("Saliendo del menu");
             teclado.close();
 
         }else {
-            console.log("Opcion no valida");
-            menuPedidos();
+            console.log("Opcion invalida");
+            mostrarMenu();
         }
     });
 }
 
+function agregarProducto(){
+    teclado.question("Nombre del producto: ", function(nombre){
 
-//==============SISTEMA DE PEDIDOS============
+        teclado.question("precio deel producto: ",function(precio){
 
-let producto = "";
-let precio = 0;
-let cantidad = 0;
-let totalPedido = 0;
+            teclado.question("Nombre de la categoria?: bebida o postre ", function(categorias){
 
-let productos = [
-    { nombre: "Sabritas", precio: 25, descuento: 10, disponible: true},
-    {nombre: "Jocho", precio: 65, descuento: 15, disponible: true},
-    {nombre: "Matiburguer", precio: 105, descuento: 20, disponible: false}
-];
+                revisarIngrediente()
+                .then(function(){
 
-let pedidos = [];
+                    return prepararProducto(nombre);
+                })
+                .then(function(){
 
-function mostrarMenu() {
-    console.log(`
-        SISTEMA DE PEDIDOS
-        1.Consultar productos
-        2. Crear pedido
-        3.Listar pedidos
-        4. Ver promociones
-        5. Salir
-        `);
+                    let producto = {
+                        nombre: nombre,
+                        precio: Number(precio),
+                        Categoria: categorias
+                    };
+                
+                    productos.push(producto);
 
-        teclado.question("Seleccione una opcion: ", function(opcion) {
+                    console.log("Producto agregado");
+                    mostrarMenu();
 
-            if (opcion == "1") {
-                consultarProductos();
-                mostrarMenu();
+                })
+                .catch(function(error){
 
-            } else if (opcion == "2") {
-                crearPedido();
+                    console.log(error);
 
-            } else if (opcion == "3") {
-                listarPedidos();
-                mostrarMenu();
+                    if(error == "Falta ingrediente"){
+                        teclado.question("¿Desea volver a poner el producto? si/no: ", function(respuesta){
 
-            } else if (opcion == "4") {
-                consultarPromociones();
-                mostrarMenu();
+                            if(respuesta.toLowerCase() == "si"){
+                                agregarProducto();
+                            }else{
+                                mostrarMenu();
+                            }
 
-            } else if (opcion == "5") {
-                console.log("Saliendo");
-                teclado.close();
-            }
+                        });
+
+                    }else if(error == "Error en cocina"){
+                        mostrarMenu();
+                    }
+
+                });
+
+            });
+
         });
+    });
+}
 
+function revisarIngrediente(){
 
+    return new Promise(function(resolver, rechazar){
 
+        let numero = Math.floor(Math.random() * 10) + 1;
+
+        if(numero == 1){
+            rechazar("Falta ingrediente");
+        }else{
+            resolver();
+        }
+
+    });
 
 }
 
-function consultarProductos() {
+function prepararProducto(nombre){
+
+    return new Promise(function(resolver, rechazar){
+
+        let tiempo = Math.floor(Math.random() * 5) + 1;
+
+        console.log("Preparando " + nombre + "...");
+
+        setTimeout(function(){
+
+            if(tiempo > 3){
+                rechazar("Error en cocina");
+            }else{
+                console.log("Producto preparado correctamente");
+                resolver();
+            }
+
+        }, tiempo * 1000);
+
+    });
+
+}
+
+function editarProducto(){
+    listarProductos();
+
+    teclado.question("Ingres el numero del producto a editar: ", function(numero) {
+
+        let indice = numero -1;
+       
+        teclado.question("NUEVO nombre: ", function(nombre) {
+
+            teclado.question("Nuevo precio: ", function(precio){
+
+                teclado.question("Nueva categoria", function(categorias){
+
+                    productos[indice].nombre = nombre;
+                    productos[indice].precio = Number(precio);
+                    productos[indice].Categoria = categorias;
+
+                console.log("Producto editado.");
+                mostrarMenu();
+
+                });
+
+            });
+        });
+    });
+}
+
+function eliminarProducto(){
+    listarProductos();
+
+    teclado.question("ingrese el nuemero del a eliminar: ", function(numero){
+
+        let indice = numero -1;
+        
+        productos.splice(indice, 1);
+
+        console.log("Producto eliminado.")
+        mostrarMenu();
+    })
+}
+
+function listarProductos(){
+    if (productos.length == 0) {
+        console.log("No hay productos registrados.");
+
+    } else {
+        console.log(`
+            PRODUCTOS REGISTRADOS
+        `);
+
+        for (let i =0; i < productos.length; i++){
+            console.log(
+                (i +1) + ". " +
+                productos[i].nombre +
+                "-$"+
+                productos[i].precio
+            );
+        }
+    }
+}
+
+mostrarMenu();
+
+function Buscar(){
     console.log(`
-        PRODUCTOS DISPONIBLES
-        `)
+        Buscar por: 
+        1. productos Baratos
+        2. productos Caros 
+        3. Bebidas
+        4. Postres
+        5. Regresar
+        
+    `);
 
-        productos.forEach(function(producto, i) {
-             if (producto.disponible == true) {
+    teclado.question("Seleccione una opcion de busqueda: ",function(opcion1) {
 
-                 console.log(
-                     (i + 1) + ". " +
-                       producto.nombre +
-                         " - $" + producto.precio
-                          );
+    if(opcion1 == "1"){
+        barato();
+        Buscar();
+    
+    } else if(opcion1 == "2"){
+        caro();
+        Buscar();
 
-                           } else {
-                             console.log(
-                                 (i + 1) + ". " +
-                                   producto.nombre +
-                                   " - No disponible"
-                                    );
-                                      }
-                                       });
+    } else if(opcion1 == "3"){
+        bebidas();
+        Buscar();
 
-                                       }
+    } else if(opcion1 == "4"){
+        pasteles();
+        Buscar();
 
-                                       function consultarPromociones() {
-                                        console.log(`
-                                            Promociones disponibles
-                                             `);
+    } else if(opcion1 == "5"){
+        mostrarMenu();
+    }else {
+            console.log("Opcion de busqueda invalida");
+            Buscar();
+            
+    }
 
-                                              let promociones = productos.map(function(producto) {
+});
+}
 
-                                                let precioFinal = producto.precio - (producto.precio * producto.descuento / 100);
-                                                 return precioFinal;
+function barato(){
+    let productosBaratos = productos.filter( productos => productos.precio <50 );
+    if (productosBaratos.length >0){
+        console.log(productosBaratos);
+    }else {
+        console.log("No hay productos que buscar ");
 
-                                                 });
+    }
+    
+}
 
-                                              for (let i = 0; i < productos.length; i++) {
+function caro(){
+    let productosCaros = productos.filter( productos => productos.precio >50);
+    if (productosCaros.length >0){
+        console.log(productosCaros);
 
-                                                 if (productos[i].disponible == true) {
-                                                    
-                                            console.log(`
-                                                   Producto: ${productos[i].nombre}
-                                                         Precio original: $${productos[i].precio}
-                                                       Descuento: ${productos[i].descuento}%
-                                                        Precio final: $${promociones[i]}
-                                                            `);
-                                                         }
-                                                        }
-                                                   }
-                                                   
-                                               function crearPedido() {
-                                                      consultarProductos();
+    }else {
+        console.log("No hay productos caros ");
+    }
 
-                                        teclado.question("Seleccione un producto: ", function(opcionProducto) {
-                                            
-                                              let indice = Number(opcionProducto) - 1;
+}
 
-                                             if (indice < 0 || indice >= productos.length || opcionProducto == "") {
-                                                
-                                              console.log("Producto invalido");
-                                                 mostrarMenu();
-                                                 return;
+function bebidas(){
+    let productobebidas = productos.filter( productos => productos.Categoria === "bebida");
+    if (productobebidas.length >0){
+        console.log(productobebidas);
 
-                                                 }
+    }else {
+        console.log("No hay bebidas ")
+    }
 
+}
 
-                                               if (productos[indice].disponible == false) {
-                                                
-                                                console.log("Producto invalido.");
-                                                 mostrarMenu();
-                                                 return;
-                                                   }
+function pasteles(){
+    let productoPasteles =productos.filter(productos => productos.Categoria === "postre");
 
-                                               producto = productos[indice].nombre;
-                                                precio = productos[indice].precio;
-                                                
-                                                 teclado.question("Ingrese la cantidad: ", function(cantidadIngresada) {
-                                                    
-                                                  cantidad = Number(cantidadIngresada);
-  
-                                                  if(cantidad <= 0 || cantidad % 1 != 0 ) {
-                                                    console.log("Cantidad invalida");
-                                                    mostrarMenu();
-                                                      return;
-                                                        }
-
-                                                let subtotal = precio * cantidad;
-                                                  let descuento = subtotal * productos[indice].descuento / 100;
-                                                    totalPedido = subtotal - descuento;
-                                                    
-                                                    let pedido = {
-                                                                        producto: producto,
-                                                                        precio: precio,
-                                                                         cantidad: cantidad,
-                                                                         descuento: descuento,
-                                                                        total: totalPedido
-                                                                        };
-                                                                        
-                                                                    pedidos.push(pedido);
-                                                                    
-                                                                    console.log(`
-                                                                        PEDIDO CREADO
-
-                                                                         producto: ${producto}
-                                                                          precio unitario: $${precio}
-                                                                         cantidad: ${cantidad} 
-                                                                          subtotal: $${subtotal}
-                                                                          descuento: $${descuento}
-                                                                         Total: $${totalPedido}
-                                                                       `);
-                                                                       
-                                                                      mostrarMenu();
-                                                                      
-                                                                      }); 
-
-                                                    
-
-   
-
-
-
-
-                    
+    if(productoPasteles.length>0){
+        console.log(productoPasteles);
+    }else {
+        console.log("No hay pasteles");
+    }
 }
