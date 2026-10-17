@@ -10,14 +10,19 @@ import { Perfil } from './componentts/Perfil';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Hola mundo rect native</Text>
+     {/*  <Text>Hola mundo rect native</Text>
       <Image source={require('./assets/wave.png')}></Image>
       <Text>----------------------------------</Text>
       <Saludo></Saludo>
       <Text>----------------------------------</Text>
       <Saludo2></Saludo2>
-      <Text>----------------------------------</Text>
-      <Perfil></Perfil>
+      <Text>----------------------------------</Text> */}
+
+      <Perfil nombre="alvaro" carrera={"Tiid"} materia={"Movil"} cuatri={"4"}> </Perfil>
+
+      <Perfil nombre="david" carrera={"Tiid"} materia={"Movil"} cuatri={"4"}> </Perfil>
+
+      <Perfil nombre="agua" carrera={"Tiid"} materia={"Movil"} cuatri={"4"}></Perfil>
 
       <StatusBar style="auto" />
     </View>
