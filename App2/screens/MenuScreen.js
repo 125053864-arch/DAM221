@@ -9,7 +9,7 @@ import Pressable from './Pressable';
 import Modal from './Modal';
 import Textitput from './Textitput';
 import Flatlist from './FlatList';
-import imageBack from './imageBack';
+import ImageBack from './imageBack';
 //*2. Zona Render o Main
 
 export default function MenuScreen() {
@@ -27,7 +27,7 @@ export default function MenuScreen() {
         case "pressa":
             return <Pressable/>;
         case 'image':
-            return <imageBack/>;
+            return <ImageBack />;
         case 'Text':
             return <Textitput/>;
         case 'flast':
