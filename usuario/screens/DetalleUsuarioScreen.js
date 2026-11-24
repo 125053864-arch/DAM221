@@ -9,12 +9,10 @@ export default function DetalleUsuarioScreen() {
 
   const actualizarUsuario=()=>{
     router.push({
-      pathname:'/acrualiza',
+      pathname:'/acrualizar',
       params:{id:id,nombre:nombre,edad:edad}
     })
   };
-
-
 
 
 

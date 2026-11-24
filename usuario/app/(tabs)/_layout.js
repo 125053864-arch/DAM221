@@ -1,6 +1,7 @@
 
 import {Tabs} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 
 export default function TabsLayout(){
@@ -23,7 +24,14 @@ export default function TabsLayout(){
 
             <Tabs.Screen
               name="consulta"
-              options={{title:"Listado"}}
+              options={{title:"Listado",
+
+                        tabBarIcon:({color, size}) => (
+                            <FontAwesome6 name="clipboard-list" size={24} color="black" />
+                        )
+                        
+
+              }}
             />
 
         </Tabs>
